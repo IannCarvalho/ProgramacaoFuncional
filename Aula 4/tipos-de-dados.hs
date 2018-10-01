@@ -76,77 +76,77 @@ getParent x (Node a left right) | (Just x == getValue left) || (Just x == getVal
 --verifica se uma BT é uma BST
 isBST NIL = True
 isBST (Node a left right) | a < getValue left = False
-						   | a > getValue right = False
-						   | otherwise = (isBST left) && (isBST right)
+                          | a > getValue right = False
+                          | otherwise = (isBST left) && (isBST right)
 
 --insere uma nova chave na BST retornando a BST modificada
 insert value NIL = Node value NIL NIL
 insert value (Node a left right) | value < a = Node a (insert x left) right
-								 | otherwise = Node a left (insert x right)
+                                 | otherwise = Node a left (insert x right)
 
 --retorna o Node da BST contendo o dado procurado ou entao NIL
 search value NIL = NIL
-search value (Node a left right) | value == a = Node a left right
-								  | otherwise = (search left) && (search right)
+search value (Node a left right) | value == a = Node a left right 
+                                 | otherwise = (search left) && (search right)
 
 --retorna o elmento maximo da BST
 maximum NIL = NIL
 maximum (Node a left right) | right == NIL = (Node a left right)
-							| otherwise = maximum right
+                            | otherwise = maximum right
 
 --retorna o elemento minimo da BST
 minimum NIL = NIL
 minimum (Node a left right) | (left == NIL) = (Node a left right)
-							| otherwise = minimum right
+                            | otherwise = minimum right
 
 --retorna o predecessor de um elemento da BST, caso o elemento esteja na BST
 predecessor value NIL = NIL
 predecessor value (Node a left right) | search value bst == NIL = NIL
-									   | (left == NIL) = firstParentRight node bst
-									   | otherwise = maximum left
-										where
-											result = search value bst
-											bst = (Node a left right)
+                                      | (left == NIL) = firstParentRight node bst
+                                      | otherwise = maximum left
+                                        where
+                                            result = search value bst
+                                            bst = (Node a left right)
 
-firstParentRight (Node x left right) (Node a b c) | (parent /= NIL) && (getLeft parent == son) = firstParentRight parent bst
-                                                   | otherwise = parent
-													where
-														parent = getParent x bst
-														son = (Node x left right)
-														bst = (Node a b c)
+firstParentRight (Node x left right) (Node a b c) | (parent /= NIL) && (getLeft parent == son) = firstParentRight parent bst 
+                                                  | otherwise = parent
+                                                    where
+                                                        parent = getParent x bst
+                                                        son = (Node x left right)
+                                                        bst = (Node a b c)
 
 
 --retorna o sucessor de um elemento da BST, caso o elemento esteja na BST
 sucessor value NIL = NIL
 successor value (Node a left right) | (node == NIL) = NIL
-									| (getRight node == NIL) = firstParentLeft node bst
-									| otherwise = myMinimum (getRight node) 
-										where
-											node = search value bst
-											bst = (Node a left right) 
+                                    | (getRight node == NIL) = firstParentLeft node bst
+                                    | otherwise = myMinimum (getRight node)
+                                        where
+                                            node = search value bst
+                                            bst = (Node a left right) 
 
 firstParentLeft (Node x left right) (Node a b c) | (parent /= NIL) && (getRight parent == son) = firstParentLeft parent bst
-                                                  | otherwise = parent
-													where
-														parent = getParent x bst
-														son = (Node x left right)
-														bst = (Node a b c) 
+                                                 | otherwise = parent
+                                                    where
+                                                        parent = getParent x bst
+                                                        son = (Node x left right)
+                                                        bst = (Node a b c) 
 
 --remove ume lemento da BST
 {-remove value NIL = NIL
 remove value (Node x left right) | searched == NIL = bst
-								  | otherwise = remove searched
-									where
-										searched = search value bst
-										bst = (Node x left right)
+                                 | otherwise = recursiveRemove value searched
+                                    where
+                                        searched = search value bst
+                                        bst = (Node x left right)
 
 recursiveRemove value (Node x left right) | left == NIL && right == NIL = NIL
-										   | right == NIL = (Node (getValue left) (getLeft left) right)
-										   | left == NIL = (Node (getValue right) left (getRight right))
-										   | otherwise = (Node getValue left right) &&
-											where
-												smaller = minimum(right)
-												aux = getValue smaller
+                                          | right == NIL = (Node (getValue left) (getLeft left) (getLeft right))
+                                          | left == NIL = (Node (getValue right) (getRight left) (getRight right))
+                                          | otherwise = (Node getValue left right) &&
+                                            where
+                                                smaller = minimum(right)
+                                                aux = getValue smaller
 -}
 
 --retorna uma lista com os dados da BST nos diversos tipos de caminhamento
