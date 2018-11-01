@@ -11,50 +11,67 @@ module MultisetList ()
  - Eh recomendavel que voce consulte a documentacao de Data.List
  -}
 import Data.List as List
+import Debug.Trace
 
 {-
  - Insere um elemento na estrutura. Caso o elemento ja existe, sua quantidade na estrutura sera incrementada.
  -}
-insert elem [] = [(elem,1)]
-insert elem bag | tuple1 == elem = [(elem, tuple2 + 1)] ++ t
-                | otherwise = [h] ++ (insert elem t)
-                where
-                  h = head bag
-                  t = tail bag
-                  tuple1 = fst h
-                  tuple2 = snd h
+
+insertBag elem bag = multipleInsert elem bag 1
+
+multipleInsert elem [] times = [(elem,times)]
+multipleInsert elem bag times | tupleElem == elem = [(elem, tupleQnt + times)] ++ t
+                              | otherwise = [h] ++ (multipleInsert elem t times)
+                              where
+                                h = head bag
+                                t = tail bag
+                                tupleElem = fst h
+                                tupleQnt = snd h
 
 {-
 - Remove um elemento da estrutura, levando em consideracao a manipulacao de sua quantidade na estrutura. 
 - Caso a quantidade atinja 0 (ou menos), o elemento deve realmente ser removido da estrutura
 -}
-remove elem [] = [(elem,1)]
-remove elem bag | tuple1 == elem && tuple2 == 1 = t
-                | tuple1 == elem && tuple2 > 1 = [(elem, tuple2 - 1)] ++ t
-                | otherwise = [h] ++ (remove elem t)
-                where
-                  h = head bag
-                  t = tail bag
-                  tuple1 = fst h
-                  tuple2 = snd h
+
+remove elem bag = multipleRemove elem bag 1
+
+multipleRemove elem [] times = []
+multipleRemove elem bag times | tupleElem == elem && result >= 1 = [(elem, result)] ++ t
+                              | tupleElem == elem && result < 1 = t
+                              | otherwise = [h] ++ multipleRemove elem t times
+                              where
+                                h = head bag
+                                t = tail bag
+                                tupleElem = fst h
+                                tupleQnt = snd h
+                                result = tupleQnt - times
 
 {-
  - Busca um elemento na estrutura retornando sua quantidade. Caso o elemento nao exista, retorna 0 como a quantidade.
 -}
 search elem [] = 0
-search elem bag | tuple1 == elem = tuple2
+search elem bag | tupleElem == elem = tupleQnt
                 | otherwise = search elem t
                 where
                   h = head bag
                   t = tail bag
-                  tuple1 = fst h
-                  tuple2 = snd h
+                  tupleElem = fst h
+                  tupleQnt = snd h
 
 {-
  - Faz a uniao deste Bag com otherBag. A uniao consiste em ter os elementos dos dois Bags com suas maiores quantidades.
  - Por exemplo, A = {(a,1),(c,3)}, B = {(b,2),(c,1)}. A.union(B) deixa A = {(a,1),(c,3),(b,2)}
 -}
-union bag1 bag2 = undefined
+unionBag [] bag2 = bag2
+unionBag bag1 [] = bag1
+unionBag bag1 bag2 | (quant2 > (search dado2 bag1)) = unionBag newA bag2
+                   | otherwise = unionBag bag1 t2 
+                    where
+                      h2 = head bag2
+                      t2 = tail bag2
+                      dado2 = fst h2
+                      quant2 = snd h2
+                      newA = insertBag dado2 bag1 
 
 {-
  - Faz a intersecao deste Bag com otherBag. A intersecao consiste em ter os elementos que estao em ambos os bags com suas 
@@ -62,15 +79,16 @@ union bag1 bag2 = undefined
  - Caso senhum elemento de A esteja contido em B ent�o a intersecao deixa A vazio.
 -}
 intersection [] bag2 = []
+intersection bag1 [] = []
 intersection bag1 bag2 | searched == 0 = intersection t bag2
-                       | searched > tuple2 = [(tuple1, searched)] ++ intersection t bag2
+                       | searched < tupleQnt = [(tupleElem, searched)] ++ intersection t bag2
                        | otherwise = [h] ++ intersection t bag2
                        where
                         h = head bag1
                         t = tail bag1
-                        tuple1 = fst h
-                        tuple2 = snd h
-                        searched = search tuple1 bag2
+                        tupleElem = fst h
+                        tupleQnt = snd h
+                        searched = search tupleElem bag2
 
 
 {-
@@ -80,33 +98,47 @@ intersection bag1 bag2 | searched == 0 = intersection t bag2
      Caso essa quantidade seja negativa o elemento deve serremovido do Bag. 
      Por exemplo, seja A = {(a,3),(b,1)} e B = {(b,2),(a,1)}. Assim, A.minus(B) deixa A = {(a,2)}.
 -}
-minus bag1 bag2 = undefined
 
+minus [] _ = []
+minus bag1 [] = bag1
+minus bag1 bag2 = minus (multipleRemove tupleElem bag1 tupleQnt) t2
+                where
+                  h2 = head bag2
+                  t2 = tail bag2
+                  tupleElem = fst h2
+                  tupleQnt = snd h2
 {-
  - Testa se este Bag esta incluso em otherBag. Para todo elemento deste bag, sua quantidade
  - deve ser menor or igual a sua quantidade em otherBag.
 -}
-inclusion bag1 bag2 = undefined
 inclusion [] bag2 = True
-inclusion bag1 bag2 | searched > tuple2 = False
+inclusion bag1 bag2 | searched > tupleQnt = False
                     | otherwise = inclusion t bag2
                     where
                       h = head bag1
                       t = tail bag1
-                      tuple1 = fst h
-                      tuple2 = snd h
-                      searched = search tuple1 bag2
+                      tupleElem = fst h
+                      tupleQnt = snd h
+                      searched = search tupleElem bag2
 
 {-
  - Realiza a soma deste Bag com otherBag. A soma de dois bags contem os elementos dos dois bags com suas quantidades somadas. 
 -}
-sum bag1 bag2 = undefined
+
+sumBag [] _ = []
+sumBag bag1 [] = bag1
+sumBag bag1 bag2 = sumBag (multipleInsert tupleElem bag1 tupleQnt) t2
+                  where
+                    h2 = head bag2
+                    t2 = tail bag2
+                    tupleElem = fst h2
+                    tupleQnt = snd h2
 
 {-
  - Retorna a quantidade total de elementos no Bag
 -}
 size [] = 0
-size bag = tuple2 + size t
+size bag = tupleQnt + size t
         where
-          tuple2 = snd(head bag)
+          tupleQnt = snd(head bag)
           t = tail bag
