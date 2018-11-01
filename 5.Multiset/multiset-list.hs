@@ -64,14 +64,16 @@ search elem bag | tupleElem == elem = tupleQnt
 -}
 unionBag [] bag2 = bag2
 unionBag bag1 [] = bag1
-unionBag bag1 bag2 | (quant2 > (search dado2 bag1)) = unionBag newA bag2
-                   | otherwise = unionBag bag1 t2 
+unionBag bag1 bag2 | tupleQnt > searched = unionBag inserted t2
+                   | otherwise = unionBag bag1 t2
                     where
                       h2 = head bag2
                       t2 = tail bag2
-                      dado2 = fst h2
-                      quant2 = snd h2
-                      newA = insertBag dado2 bag1 
+                      tupleElem = fst h2
+                      tupleQnt = snd h2
+                      searched = search tupleElem bag1
+                      result = tupleQnt - searched
+                      inserted = multipleInsert tupleElem bag1 result
 
 {-
  - Faz a intersecao deste Bag com otherBag. A intersecao consiste em ter os elementos que estao em ambos os bags com suas 
