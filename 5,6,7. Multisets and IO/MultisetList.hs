@@ -1,4 +1,16 @@
-module MultisetList ()
+module MultisetList ( MultisetList.insert,
+                      MultisetList.remove,
+                      MultisetList.search,
+                      MultisetList.union,
+                      MultisetList.intersection,
+                      MultisetList.minus,
+                      MultisetList.inclusion,
+                      MultisetList.sum,
+                      MultisetList.size,
+                      sortKey,
+                      sortValue,
+                      module List
+)
  where
 
 {- 
@@ -10,14 +22,15 @@ module MultisetList ()
  - cada elemento da lista consiste do dado em si e sua quantidade (um par). 
  - Eh recomendavel que voce consulte a documentacao de Data.List
  -}
-import Data.List as List
+ 
+import Data.List as List hiding (insert, union, sum)
 import Debug.Trace
 
 {-
  - Insere um elemento na estrutura. Caso o elemento ja existe, sua quantidade na estrutura sera incrementada.
  -}
 
-insertBag elem bag = multipleInsert elem bag 1
+insert elem bag = multipleInsert elem bag 1
 
 multipleInsert elem [] times = [(elem,times)]
 multipleInsert elem bag times | tupleElem == elem = [(elem, tupleQnt + times)] ++ t
@@ -62,10 +75,10 @@ search elem bag | tupleElem == elem = tupleQnt
  - Faz a uniao deste Bag com otherBag. A uniao consiste em ter os elementos dos dois Bags com suas maiores quantidades.
  - Por exemplo, A = {(a,1),(c,3)}, B = {(b,2),(c,1)}. A.union(B) deixa A = {(a,1),(c,3),(b,2)}
 -}
-unionBag [] bag2 = bag2
-unionBag bag1 [] = bag1
-unionBag bag1 bag2 | tupleQnt > searched = unionBag inserted t2
-                   | otherwise = unionBag bag1 t2
+union [] bag2 = bag2
+union bag1 [] = bag1
+union bag1 bag2 | tupleQnt > searched = union insert t2
+                   | otherwise = union bag1 t2
                     where
                       h2 = head bag2
                       t2 = tail bag2
@@ -73,7 +86,7 @@ unionBag bag1 bag2 | tupleQnt > searched = unionBag inserted t2
                       tupleQnt = snd h2
                       searched = search tupleElem bag1
                       result = tupleQnt - searched
-                      inserted = multipleInsert tupleElem bag1 result
+                      insert = multipleInsert tupleElem bag1 result
 
 {-
  - Faz a intersecao deste Bag com otherBag. A intersecao consiste em ter os elementos que estao em ambos os bags com suas 
@@ -127,9 +140,9 @@ inclusion bag1 bag2 | searched > tupleQnt = False
  - Realiza a soma deste Bag com otherBag. A soma de dois bags contem os elementos dos dois bags com suas quantidades somadas. 
 -}
 
-sumBag [] _ = []
-sumBag bag1 [] = bag1
-sumBag bag1 bag2 = sumBag (multipleInsert tupleElem bag1 tupleQnt) t2
+sum [] _ = []
+sum bag1 [] = bag1
+sum bag1 bag2 = MultisetList.sum (multipleInsert tupleElem bag1 tupleQnt) t2
                   where
                     h2 = head bag2
                     t2 = tail bag2
@@ -144,3 +157,9 @@ size bag = tupleQnt + size t
         where
           tupleQnt = snd(head bag)
           t = tail bag
+
+sortKey :: Ord a => [(a,b)] -> [(a,b)]
+sortKey = List.sortOn fst
+
+sortValue :: Ord b => [(a,b)] -> [(a,b)]
+sortValue = List.sortOn snd

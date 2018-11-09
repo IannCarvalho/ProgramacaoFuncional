@@ -1,4 +1,14 @@
-module MultisetMap ()
+module MultisetMap (  MultisetMap.insert,
+                      MultisetMap.remove,
+                      MultisetMap.search,
+                      MultisetMap.union,
+                      MultisetMap.intersection,
+                      MultisetMap.minus,
+                      MultisetMap.inclusion,
+                      MultisetMap.sum,
+                      MultisetMap.size,
+                      module Map
+)
  where
 
 {- 
@@ -10,22 +20,27 @@ module MultisetMap ()
  - cada elemento da lista consiste do dado em si mapeado para sua quantidade. 
  - Eh recomendavel que voce consulte a documentacao de Data.Map
  -}
-import Data.Map as Map
+
+import Data.Map as M (insert)
+import Data.Map as Map hiding (insert, union, intersection, size)
+import Debug.Trace
+
 
 {-
- - Insere um elemento na estrutura. Caso o elemento ja existe, sua quantidade na estrutura sera incrementada.
- -}
-insert elem bag | member elem bag = Map.insert elem plusOne bag
-                | otherwise = Map.insert elem 1 bag
-                  where
-                    plusOne = (bag ! elem) + 1
+- Insere um elemento na estrutura. Caso o elemento ja existe, sua quantidade na estrutura sera incrementada.
+-}
+insert elem bag  | member elem bag = M.insert elem plusOne bag
+                    | otherwise = M.insert elem 1 bag
+                      where
+                        plusOne = (bag ! elem) + 1
+
 
 {-
 - Remove um elemento da estrutura, levando em consideracao a manipulacao de sua quantidade na estrutura. 
 - Caso a quantidade atinja 0 (ou menos), o elemento deve realmente ser removido da estrutura
 -}
 
-remove elem bag | lessOne > 0 = Map.insert elem lessOne bag
+remove elem bag | lessOne > 0 = M.insert elem lessOne bag
                 | otherwise = Map.delete elem bag
                   where
                     lessOne = (bag ! elem) - 1
@@ -41,35 +56,34 @@ search elem bag | member elem bag = (bag ! elem)
  - Por exemplo, A = {(a,1),(c,3)}, B = {(b,2),(c,1)}. A.union(B) deixa A = {(a,1),(c,3),(b,2)}
 -}
 
-union bag1 (fromList []) = bag1
-union (fromList []) bag2 = bag2
-union bag1 bag2 | qnt1 < qnt2 = union (Map.insert elem qnt2 bag1) t2
-                | otherwise = union bag1 t2
-                  where
-                    list2 = toList (bag2)
-                    elem = fst (head (list2))
-                    qnt1 = search elem bag1
-                    qnt2 = snd (head (list2))
-                    t2 = (fromList (tail list2))
+union bag1 bag2  | bag2 == (Map.fromList []) = bag1
+                    | qnt1 < qnt2 = union (M.insert elem qnt2 bag1) t2
+                    | otherwise = union bag1 t2
+                      where
+                        list2 = toList (bag2)
+                        elem = fst (head (list2))
+                        qnt1 = search elem bag1
+                        qnt2 = snd (head (list2))
+                        t2 = (fromList (tail list2))
 {-
  - Faz a intersecao deste Bag com otherBag. A intersecao consiste em ter os elementos que estao em ambos os bags com suas 
  - menores quantidades. Por exemplo, Seja A = {(a,3),(b,1)} e B = {(a,1)}. Assim, A.intersection(B) deixa A = {(a,1)}
  - Caso senhum elemento de A esteja contido em B ent�o a intersecao deixa A vazio.
 -}
-intersection bag1 (fromList []) = bag1
-intersection (fromList []) bag2 = bag2
-intersection bag1 bag2 = intersection' bag1 bag2 (fromList [])
 
-intersection' bag1 (fromList []) result = result
-intersection' bag1 bag2 result| qnt1 == 0 = intersection' bag1 t2 result
-                              | qnt1 > qnt2 = intersection' bag1 t2 (Map.insert elem qnt2 result)
-                              | otherwise = intersection' bag1 t2 (Map.insert elem qnt1 result)
-                                where
-                                  list2 = toList (bag2)
-                                  elem = fst (head (list2))
-                                  qnt1 = search elem bag1
-                                  qnt2 = snd (head (list2))
-                                  t2 = (fromList (tail list2))
+intersection bag1 bag2  | bag1 == (Map.fromList []) || bag2 == (Map.fromList []) = (Map.fromList [])
+                        | otherwise = intersection' bag1 bag2 (Map.fromList [])
+
+intersection' bag1 bag2 result  | bag2 == (Map.fromList []) = result
+                                | qnt1 == 0 = intersection' bag1 t2 result
+                                | qnt1 > qnt2 = intersection' bag1 t2 (M.insert elem qnt2 result)
+                                | otherwise = intersection' bag1 t2 (M.insert elem qnt1 result)
+                                  where
+                                    list2 = toList (bag2)
+                                    elem = fst (head (list2))
+                                    qnt1 = search elem bag1
+                                    qnt2 = snd (head (list2))
+                                    t2 = (fromList (tail list2))
 
 {-
  - Faz a diferenca deste Bag com otherBag. A diferenca A \ B entre bags eh definida como segue:
@@ -79,8 +93,8 @@ intersection' bag1 bag2 result| qnt1 == 0 = intersection' bag1 t2 result
      Por exemplo, seja A = {(a,3),(b,1)} e B = {(b,2),(a,1)}. Assim, A.minus(B) deixa A = {(a,2)}.
 -}
 
-minus (fromList []) bag2 = 
-minus bag1 bag2 | dif > 0 = Map.insert elem1 dif (minus t1 bag2)
+minus bag1 bag2 | bag1 == (Map.fromList []) = (Map.fromList [])
+                | dif > 0 = M.insert elem1 dif (minus t1 bag2)
                 | otherwise = minus t1 bag2  
                   where
                     list1 = toList bag1
@@ -96,8 +110,8 @@ minus bag1 bag2 | dif > 0 = Map.insert elem1 dif (minus t1 bag2)
  - deve ser menor or igual a sua quantidade em otherBag.
 -}
 
-inclusion bag1 (fromList []) = True
-inclusion bag1 bag2 | member elem bag1 = inclusion bag1 t2
+inclusion bag1 bag2 | bag2 == (Map.fromList []) = True
+                    | member elem bag1 = inclusion bag1 t2
                     | otherwise = False
                       where 
                         list2 = toList bag2
