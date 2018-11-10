@@ -15,7 +15,6 @@ apos a ordenação.
 import qualified MultisetList
 import qualified MultisetMap
 
-
 main = do
   putStrLn ""
   putStrLn "Escolha o multiconjunto implementado:"
@@ -28,25 +27,8 @@ main = do
     "2" -> mapaMenu (MultisetMap.fromList [])
     _ -> main
 
-
 listaMenu lista = do
-  putStrLn ""
-  putStrLn "Multiconjunto: Lista"
-  putStrLn "Escolha a função a ser testada:"
-  putStrLn "1. Insert"
-  putStrLn "2. Remove"
-  putStrLn "3. Search"
-  putStrLn "4. Union"
-  putStrLn "5. Intersection"
-  putStrLn "6. Minus"
-  putStrLn "7. Inclusion"
-  putStrLn "8. Sum"
-  putStrLn "9. Size"
-  putStrLn "10. Sort Key"
-  putStrLn "11. Sort Value"
-  putStrLn "12. Print"
-  putStrLn "13. Sair"
-  putStrLn ""
+  opcoes
   opcao <- getLine
   putStrLn ""
   case opcao of
@@ -74,28 +56,28 @@ listaMenu lista = do
     "4" -> do putStrLn "Lista: Union"
               putStrLn "Escolha a lista:"
               entrada <- getLine
-              let lista2 = read entrada :: Read a => [a]
+              let lista2 = stringToList entrada "0"
               putStrLn ""
               listaMenu (MultisetList.union lista lista2)
 
     "5" -> do putStrLn "Lista: Intersection"
               putStrLn "Escolha a lista:"
               entrada <- getLine
-              let lista2 = read entrada :: Read a => [a]
+              let lista2 = stringToList entrada "0"
               putStrLn ""
               listaMenu (MultisetList.intersection lista lista2)
 
     "6" -> do putStrLn "Lista: Minus"
               putStrLn "Escolha a lista:"
               entrada <- getLine
-              let lista2 = read entrada :: Read a => [a]
+              let lista2 = stringToList entrada "0"
               putStrLn ""
               listaMenu (MultisetList.minus lista lista2)
 
     "7" -> do putStrLn "Lista: Inclusion"
               putStrLn "Escolha a lista:"
               entrada <- getLine
-              let lista2 = read entrada :: Read a => [a]
+              let lista2 = stringToList entrada "0"
               putStr "Resposta: "
               putStrLn (show (MultisetList.inclusion lista lista2))
               putStrLn "Voltar (Enter)"
@@ -105,7 +87,7 @@ listaMenu lista = do
     "8" -> do putStrLn "Lista: Sum"
               putStrLn "Escolha a lista:"
               entrada <- getLine
-              let lista2 = read entrada :: Read a => [a]
+              let lista2 = stringToList entrada "0"
               putStrLn ""
               listaMenu (MultisetList.sum lista lista2)
 
@@ -142,23 +124,7 @@ listaMenu lista = do
     _ -> listaMenu lista
 
 mapaMenu mapa = do
-  putStrLn ""
-  putStrLn "Multiconjunto: Mapa"
-  putStrLn "Escolha a função a ser testada:"
-  putStrLn "1. Insert"
-  putStrLn "2. Remove"
-  putStrLn "3. Search"
-  putStrLn "4. Union"
-  putStrLn "5. Intersection"
-  putStrLn "6. Minus"
-  putStrLn "7. Inclusion"
-  putStrLn "8. Sum"
-  putStrLn "9. Size"
-  putStrLn "10. Sort Key"
-  putStrLn "11. Sort Value"
-  putStrLn "12. Print"
-  putStrLn "13. Sair"
-  putStrLn ""
+  opcoes
   opcao <- getLine
   putStrLn ""
   case opcao of
@@ -166,8 +132,8 @@ mapaMenu mapa = do
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              mapaMenu (MultisetMap.insert elemento mapa)
-
+              listaMenu (MultisetMap.insert elemento mapa)
+    
     "2" -> do putStrLn "Mapa: Remove"
               putStrLn "Escolha o elemento:"
               elemento <- getLine
@@ -186,7 +152,7 @@ mapaMenu mapa = do
     "4" -> do putStrLn "Mapa: Union"
               putStrLn "Escolha o mapa:"
               entrada <- getLine
-              let lista = read entrada :: Read a => [a]
+              let lista = stringToList entrada "0"
               print lista
               putStrLn ""
               mapaMenu (MultisetMap.union mapa (MultisetMap.fromList lista))
@@ -194,14 +160,14 @@ mapaMenu mapa = do
     "5" -> do putStrLn "Mapa: Intersection"
               putStrLn "Escolha o mapa:"
               entrada <- getLine
-              let lista = read entrada :: Read a => [a]
+              let lista = stringToList entrada "0"
               putStrLn ""
               mapaMenu (MultisetMap.intersection mapa (MultisetMap.fromList lista))
 
     "6" -> do putStrLn "Mapa: Minus"
               putStrLn "Escolha o mapa:"
               entrada <- getLine
-              let lista = read entrada :: Read a => [a]
+              let lista = stringToList entrada "0"
               putStrLn ""
               mapaMenu (MultisetMap.minus mapa (MultisetMap.fromList lista))
 
@@ -218,7 +184,7 @@ mapaMenu mapa = do
     "8" -> do putStrLn "Mapa: Sum"
               putStrLn "Escolha o mapa:"
               entrada <- getLine
-              let lista = read entrada :: Read a => [a]
+              let lista = stringToList entrada "0"
               putStrLn ""
               mapaMenu (MultisetMap.sum mapa (MultisetMap.fromList lista))
 
@@ -253,6 +219,24 @@ mapaMenu mapa = do
     "13" -> main
 
     _ -> mapaMenu mapa
+
+opcoes = do
+  putStrLn ""
+  putStrLn "Escolha a função a ser testada:"
+  putStrLn "1. Insert"
+  putStrLn "2. Remove"
+  putStrLn "3. Search"
+  putStrLn "4. Union"
+  putStrLn "5. Intersection"
+  putStrLn "6. Minus"
+  putStrLn "7. Inclusion"
+  putStrLn "8. Sum"
+  putStrLn "9. Size"
+  putStrLn "10. Sort Key"
+  putStrLn "11. Sort Value"
+  putStrLn "12. Print"
+  putStrLn "13. Sair"
+  putStrLn ""
 
 stringToList :: [Char] -> [Char] -> [(String,Integer)]
 stringToList "" _ = []
