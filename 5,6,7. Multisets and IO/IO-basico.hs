@@ -17,9 +17,11 @@ import qualified MultisetMap
 
 
 main = do
+  putStrLn ""
   putStrLn "Escolha o multiconjunto implementado:"
   putStrLn "1. Lista"
-  putStrLn "2. Mapa\n"
+  putStrLn "2. Mapa"  
+  putStrLn ""
   escolha <- getLine
   case escolha of
     "1" -> listaMenu []
@@ -28,7 +30,8 @@ main = do
 
 
 listaMenu lista = do
-  putStrLn "\nMulticonjunto: Lista"
+  putStrLn ""
+  putStrLn "Multiconjunto: Lista"
   putStrLn "Escolha a função a ser testada:"
   putStrLn "1. Insert"
   putStrLn "2. Remove"
@@ -42,17 +45,21 @@ listaMenu lista = do
   putStrLn "10. Sort Key"
   putStrLn "11. Sort Value"
   putStrLn "12. Print"
-  putStrLn "13. Sair\n\n"
+  putStrLn "13. Sair"
+  putStrLn ""
   opcao <- getLine
+  putStrLn ""
   case opcao of
     "1" -> do putStrLn "Lista: Insert"
-              putStrLn "Escolha o elemento:\n"
+              putStrLn "Escolha o elemento:"
               elemento <- getLine
+              putStrLn ""
               listaMenu (MultisetList.insert elemento lista)
 
     "2" -> do putStrLn "Lista: Remove"
-              putStrLn "Escolha o elemento:\n"
+              putStrLn "Escolha o elemento:"
               elemento <- getLine
+              putStrLn ""
               listaMenu (MultisetList.remove elemento lista)
 
     "3" -> do putStrLn "Lista: Search"
@@ -65,21 +72,24 @@ listaMenu lista = do
               listaMenu lista
 
     "4" -> do putStrLn "Lista: Union"
-              putStrLn "Escolha a lista:\n"
+              putStrLn "Escolha a lista:"
               entrada <- getLine
               let lista2 = read entrada :: Read a => [a]
+              putStrLn ""
               listaMenu (MultisetList.union lista lista2)
 
     "5" -> do putStrLn "Lista: Intersection"
-              putStrLn "Escolha a lista:\n"
+              putStrLn "Escolha a lista:"
               entrada <- getLine
               let lista2 = read entrada :: Read a => [a]
+              putStrLn ""
               listaMenu (MultisetList.intersection lista lista2)
 
     "6" -> do putStrLn "Lista: Minus"
-              putStrLn "Escolha a lista:\n"
+              putStrLn "Escolha a lista:"
               entrada <- getLine
               let lista2 = read entrada :: Read a => [a]
+              putStrLn ""
               listaMenu (MultisetList.minus lista lista2)
 
     "7" -> do putStrLn "Lista: Inclusion"
@@ -93,9 +103,10 @@ listaMenu lista = do
               listaMenu lista
 
     "8" -> do putStrLn "Lista: Sum"
-              putStrLn "Escolha a lista:\n"
+              putStrLn "Escolha a lista:"
               entrada <- getLine
               let lista2 = read entrada :: Read a => [a]
+              putStrLn ""
               listaMenu (MultisetList.sum lista lista2)
 
     "9" -> do putStrLn "Lista: Size"
@@ -131,7 +142,8 @@ listaMenu lista = do
     _ -> listaMenu lista
 
 mapaMenu mapa = do
-  putStrLn "\nMulticonjunto: Mapa"
+  putStrLn ""
+  putStrLn "Multiconjunto: Mapa"
   putStrLn "Escolha a função a ser testada:"
   putStrLn "1. Insert"
   putStrLn "2. Remove"
@@ -145,17 +157,21 @@ mapaMenu mapa = do
   putStrLn "10. Sort Key"
   putStrLn "11. Sort Value"
   putStrLn "12. Print"
-  putStrLn "13. Sair\n\n"
+  putStrLn "13. Sair"
+  putStrLn ""
   opcao <- getLine
+  putStrLn ""
   case opcao of
     "1" -> do putStrLn "Mapa: Insert"
-              putStrLn "Escolha o elemento:\n"
+              putStrLn "Escolha o elemento:"
               elemento <- getLine
+              putStrLn ""
               mapaMenu (MultisetMap.insert elemento mapa)
 
     "2" -> do putStrLn "Mapa: Remove"
-              putStrLn "Escolha o elemento:\n"
+              putStrLn "Escolha o elemento:"
               elemento <- getLine
+              putStrLn ""
               mapaMenu (MultisetMap.remove elemento mapa)
 
     "3" -> do putStrLn "Mapa: Search"
@@ -168,27 +184,31 @@ mapaMenu mapa = do
               mapaMenu mapa
 
     "4" -> do putStrLn "Mapa: Union"
-              putStrLn "Escolha o mapa:\n"
+              putStrLn "Escolha o mapa:"
               entrada <- getLine
               let lista = read entrada :: Read a => [a]
+              print lista
+              putStrLn ""
               mapaMenu (MultisetMap.union mapa (MultisetMap.fromList lista))
 
     "5" -> do putStrLn "Mapa: Intersection"
-              putStrLn "Escolha o mapa:\n"
+              putStrLn "Escolha o mapa:"
               entrada <- getLine
               let lista = read entrada :: Read a => [a]
+              putStrLn ""
               mapaMenu (MultisetMap.intersection mapa (MultisetMap.fromList lista))
 
     "6" -> do putStrLn "Mapa: Minus"
-              putStrLn "Escolha o mapa:\n"
+              putStrLn "Escolha o mapa:"
               entrada <- getLine
               let lista = read entrada :: Read a => [a]
+              putStrLn ""
               mapaMenu (MultisetMap.minus mapa (MultisetMap.fromList lista))
 
     "7" -> do putStrLn "Mapa: Inclusion"
               putStrLn "Escolha o mapa:"
               entrada <- getLine
-              let lista = read entrada :: Read a => [a]
+              let lista = stringToList entrada "0"
               putStr "Resposta: "
               putStrLn (show (MultisetMap.inclusion mapa (MultisetMap.fromList lista)))
               putStrLn "Voltar (Enter)"
@@ -196,9 +216,10 @@ mapaMenu mapa = do
               mapaMenu mapa
 
     "8" -> do putStrLn "Mapa: Sum"
-              putStrLn "Escolha o mapa:\n"
+              putStrLn "Escolha o mapa:"
               entrada <- getLine
               let lista = read entrada :: Read a => [a]
+              putStrLn ""
               mapaMenu (MultisetMap.sum mapa (MultisetMap.fromList lista))
 
     "9" -> do putStrLn "Mapa: Size"
@@ -232,3 +253,13 @@ mapaMenu mapa = do
     "13" -> main
 
     _ -> mapaMenu mapa
+
+stringToList :: [Char] -> [Char] -> [(String,Integer)]
+stringToList "" _ = []
+stringToList string firstOne  | [h] == " " || [h] == "," || [h] == "(" || [h] == ")" = stringToList (tail string) firstOne
+                              | firstOne == "0" = stringToList (tail string) [h]
+                              | otherwise = [tuple] ++ (stringToList (tail string) "0") 
+                                where
+                                  h = head string
+                                  number = read [h]
+                                  tuple = (firstOne, number)
