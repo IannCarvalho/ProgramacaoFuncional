@@ -6,10 +6,7 @@ module MultisetList ( MultisetList.insert,
                       MultisetList.minus,
                       MultisetList.inclusion,
                       MultisetList.sum,
-                      MultisetList.size,
-                      sortKey,
-                      sortValue,
-                      module List
+                      MultisetList.size
 )
  where
 
@@ -157,9 +154,3 @@ size bag = tupleQnt + size t
         where
           tupleQnt = snd(head bag)
           t = tail bag
-
-sortKey :: Ord a => [(a,b)] -> [(a,b)]
-sortKey = List.sortOn fst
-
-sortValue :: Ord b => [(a,b)] -> [(a,b)]
-sortValue = List.sortOn snd
