@@ -34,7 +34,7 @@ import Control.Exception as Exception
 
 
 data MyException = ElementoInexistente | OperacaoNaoPermitida deriving Eq
-instance CE.Exception MyException
+instance Exception.Exception MyException
 instance Show MyException where
   show e  | e == ElementoInexistente = "O elemento é inexistente !"
           | otherwise = "A operação não é permitida !"
@@ -66,7 +66,7 @@ listaMenu lista = do
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              if (MultisetList.search elemento lista) == 0 then CE.throwIO ElementoInexistente 
+              if (MultisetList.search elemento lista) == 0 then Exception.throwIO ElementoInexistente 
               else listaMenu (MultisetList.remove elemento lista)
 
     "3" -> do putStrLn "Lista: Search"
@@ -97,8 +97,8 @@ listaMenu lista = do
               entrada <- getLine
               let lista2 = stringToList entrada "0"
               putStrLn ""
-              if (MultisetList.inclusion mapa (MultisetList.fromList lista)) then CE.throwIO OperacaoNaoPermitida
-              else listaMenu (MultisetList.minus mapa (MultisetList.fromList lista))
+              if (MultisetList.inclusion lista lista2) then Exception.throwIO OperacaoNaoPermitida
+              else listaMenu (MultisetList.minus lista lista2)
 
     "7" -> do putStrLn "Lista: Inclusion"
               putStrLn "Escolha a lista:"
@@ -158,13 +158,13 @@ mapaMenu mapa = do
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              listaMenu (MultisetMap.insert elemento mapa)
+              mapaMenu (MultisetMap.insert elemento mapa)
     
     "2" -> do putStrLn "Mapa: Remove"
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              if (MultisetMap.search elemento lista) == 0 then CE.throwIO ElementoInexistente 
+              if (MultisetMap.search elemento mapa) == 0 then Exception.throwIO ElementoInexistente 
               else mapaMenu (MultisetMap.remove elemento mapa)
               
     "3" -> do putStrLn "Mapa: Search"
@@ -196,7 +196,7 @@ mapaMenu mapa = do
               entrada <- getLine
               let lista = stringToList entrada "0"
               putStrLn ""
-              if (MultisetList.inclusion mapa (MultisetList.fromList lista)) then CE.throwIO OperacaoNaoPermitida
+              if (MultisetMap.inclusion mapa (MultisetMap.fromList lista)) then Exception.throwIO OperacaoNaoPermitida
               else mapaMenu (MultisetMap.minus mapa (MultisetMap.fromList lista))
               
 
