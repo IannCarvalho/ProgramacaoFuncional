@@ -1,6 +1,6 @@
 module Util ( Util.stringToList,
               Util.sortKey,
-              Util.sortValue
+              Util.sortValue,
               Util.opcoes
 )
  where
