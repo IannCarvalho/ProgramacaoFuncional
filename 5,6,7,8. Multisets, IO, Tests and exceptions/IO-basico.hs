@@ -1,3 +1,5 @@
+-- IO
+
 {-
 Neste exercicio voce vai implementar um menu que permite o usuario escolher
 a sua versao de multiconjunto implementada (multiset) com lista ou map.
@@ -12,8 +14,30 @@ quantidade de ocorrencias. No caso da função de ordenação ser invocada, ela 
 apos a ordenação.
 -}
 
+-- Exceptions
+
+{- 
+- Remove: não é possivel remover um element que nao existe no bag. Neste caso,
+- deve-se retornar uma exceção chamada ElementoInexistente
+- Minus: na subtração de bags, caso um elemento x esteja no primeiro bag com
+- uma quantidade menor que no bag a ser subtraído, então deve retornar uma
+- excecao OperacaoNaoPermitida. Exemplo: {(a,3)} \ {(a,4)} retornaria essa
+- exceção porque o primeiro Bag nao possui quantidade suficiente de ‘a’ para
+- subtrair.
+- Embora as excecoes acima sejam tipificadas, é sempre bom ter uma mensagem
+- de texto associada a elas. Considere isso na hora que for implementa-las.
+-}
+
 import qualified MultisetList
 import qualified MultisetMap
+import Control.Exception as Exception
+
+
+data MyException = ElementoInexistente | OperacaoNaoPermitida deriving Eq
+instance CE.Exception MyException
+instance Show MyException where
+  show e  | e == ElementoInexistente = "O elemento é inexistente !"
+          | otherwise = "A operação não é permitida !"
 
 main = do
   putStrLn ""
@@ -42,7 +66,8 @@ listaMenu lista = do
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              listaMenu (MultisetList.remove elemento lista)
+              if (MultisetList.search elemento lista) == 0 then CE.throwIO ElementoInexistente 
+              else listaMenu (MultisetList.remove elemento lista)
 
     "3" -> do putStrLn "Lista: Search"
               putStrLn "Escolha o elemento:"
@@ -72,7 +97,8 @@ listaMenu lista = do
               entrada <- getLine
               let lista2 = stringToList entrada "0"
               putStrLn ""
-              listaMenu (MultisetList.minus lista lista2)
+              if (MultisetList.inclusion mapa (MultisetList.fromList lista)) then CE.throwIO OperacaoNaoPermitida
+              else listaMenu (MultisetList.minus mapa (MultisetList.fromList lista))
 
     "7" -> do putStrLn "Lista: Inclusion"
               putStrLn "Escolha a lista:"
@@ -138,8 +164,9 @@ mapaMenu mapa = do
               putStrLn "Escolha o elemento:"
               elemento <- getLine
               putStrLn ""
-              mapaMenu (MultisetMap.remove elemento mapa)
-
+              if (MultisetMap.search elemento lista) == 0 then CE.throwIO ElementoInexistente 
+              else mapaMenu (MultisetMap.remove elemento mapa)
+              
     "3" -> do putStrLn "Mapa: Search"
               putStrLn "Escolha o elemento:"
               elemento <- getLine
@@ -169,7 +196,9 @@ mapaMenu mapa = do
               entrada <- getLine
               let lista = stringToList entrada "0"
               putStrLn ""
-              mapaMenu (MultisetMap.minus mapa (MultisetMap.fromList lista))
+              if (MultisetList.inclusion mapa (MultisetList.fromList lista)) then CE.throwIO OperacaoNaoPermitida
+              else mapaMenu (MultisetMap.minus mapa (MultisetMap.fromList lista))
+              
 
     "7" -> do putStrLn "Mapa: Inclusion"
               putStrLn "Escolha o mapa:"

@@ -127,7 +127,7 @@ minus bag1 bag2 = minus (multipleRemove tupleElem bag1 tupleQnt) t2
  - deve ser menor or igual a sua quantidade em otherBag.
 -}
 inclusion [] bag2 = True
-inclusion bag1 bag2 | searched > tupleQnt = False
+inclusion bag1 bag2 | searched < tupleQnt = False
                     | otherwise = inclusion t bag2
                     where
                       h = head bag1

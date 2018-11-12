@@ -110,13 +110,15 @@ minus bag1 bag2 | bag1 == (Map.fromList []) = (Map.fromList [])
  - deve ser menor or igual a sua quantidade em otherBag.
 -}
 
-inclusion bag1 bag2 | bag2 == (Map.fromList []) = True
-                    | member elem bag1 = inclusion bag1 t2
+inclusion bag1 bag2 | bag1 == (Map.fromList []) = True
+                    | searched <= qnt = inclusion t1 bag2
                     | otherwise = False
                       where 
-                        list2 = toList bag2
-                        elem = fst (head list2)
-                        t2 = (fromList (tail list2))
+                        list1 = toList bag1
+                        elem = fst (head list1)
+                        qnt = snd (head list1)
+                        t1 = (fromList (tail list1))
+                        searched = search elem bag2
 
 {-
  - Realiza a soma deste Bag com otherBag. A soma de dois bags contem os elementos dos dois bags com suas quantidades somadas. 
