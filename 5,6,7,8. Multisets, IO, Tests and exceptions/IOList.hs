@@ -13,6 +13,7 @@ instance Show MyException where
           | otherwise = "A operação não é permitida !"
 
 listaMenu lista = do
+  Util.opcoes
   opcao <- getLine
   putStrLn ""
   case opcao of
