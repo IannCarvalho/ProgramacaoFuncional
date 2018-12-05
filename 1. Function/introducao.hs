@@ -44,6 +44,7 @@ isPrime x = ([] == dividers)
     dividers = [y | y <- [2..(x-1)], (x `mod` y == 0)]
 
 -- Solução do Professor
+{-
 isPrime 1 = True
 isPrime 2 = True
 isPrime 3 = True
@@ -52,6 +53,7 @@ isPrime x = isPrime' x [2..(x-1)]
 isPrime' x [] = True
 isPrime' x (y:ys) = if (mod x y) == 0 then False 
                     else isPrime' x ys
+-}
 
 {-
 - Calcula um termo da sequencia de Fibonnacci. Voce pode trabalhar com listas. 
@@ -63,6 +65,7 @@ fib 1 = 1
 fib x = fib(x-1) + fib(x-2)
 
 -- Solução do Professor
+{-
 fib 1 = [1]	
 fib 2 = [1,1]
 fib x = last (fib' x)
@@ -72,6 +75,7 @@ fib' 2 = [1,1]
 fib' n = previous ++ [(last (init previous)) + (last previous)]
   where
     previous = fib' (n-1)
+-}
 
 {-
 - Calcula um MDC de dois numeros usando o algoritmo de Euclides. 
@@ -85,11 +89,13 @@ mdc x y | x < y = mdc x (y-x)
         | otherwise = mdc (x-y) y
 
 -- Solução do Professor
+{-
 mdc 0 y = y
 mdc x 0 = x
 mdc x y = mdc y r
   where
     r = mod x y
+-}
 
 {-
 - Calcula um MMC de dois numeros. 
@@ -104,10 +110,12 @@ mmc' x y n  | divisivel x y n = n
 divisivel x y n = (mod n x == 0) && (mod n y == 0)
 
 -- Solução do Professor
+{-
 mmc x y = head ys
   where ys = filter (divisivel x y) [(min x y)..x*y]
 
 divisivel x y n = (mod n x == 0) && (mod n y == 0)
+-}
 
 {-
 - Determina se dois numeros inteiros positivos sao co-primos. Dois numeros sao co-primos se 

@@ -3,6 +3,7 @@ square = \x -> x*x
 
 --Implemente as funções anteriormente escritas usando expressões lambda
 --consulte suas implementacoes anteriores para a documentacao dessas funcoes
+
 -- pow x y = undefined
 pow = \x y -> if (y==1) then x else x * pow x (y-1) 
 -- fatorial x = undefined
