@@ -104,16 +104,16 @@ predecessor value NIL = NIL
 predecessor value (Node a left right) | search value bst == NIL = NIL
                                       | (left == NIL) = firstParentRight node bst
                                       | otherwise = maximum left
-                                        where
-                                            result = search value bst
-                                            bst = (Node a left right)
+                                      where
+                                          result = search value bst
+                                          bst = (Node a left right)
 
 firstParentRight (Node x left right) (Node a b c) | (parent /= NIL) && (getLeft parent == son) = firstParentRight parent bst 
                                                   | otherwise = parent
-                                                    where
-                                                        parent = getParent x bst
-                                                        son = (Node x left right)
-                                                        bst = (Node a b c)
+                                                  where
+                                                      parent = getParent x bst
+                                                      son = (Node x left right)
+                                                      bst = (Node a b c)
 
 
 --retorna o sucessor de um elemento da BST, caso o elemento esteja na BST
@@ -121,33 +121,64 @@ sucessor value NIL = NIL
 successor value (Node a left right) | (node == NIL) = NIL
                                     | (getRight node == NIL) = firstParentLeft node bst
                                     | otherwise = myMinimum (getRight node)
-                                        where
-                                            node = search value bst
-                                            bst = (Node a left right) 
-
-firstParentLeft (Node x left right) (Node a b c) | (parent /= NIL) && (getRight parent == son) = firstParentLeft parent bst
-                                                 | otherwise = parent
-                                                    where
-                                                        parent = getParent x bst
-                                                        son = (Node x left right)
-                                                        bst = (Node a b c) 
-
---remove ume lemento da BST
-{-remove value NIL = NIL
-remove value (Node x left right) | searched == NIL = bst
-                                 | otherwise = recursiveRemove value searched
                                     where
-                                        searched = search value bst
-                                        bst = (Node x left right)
+                                        node = search value bst
+                                        bst = (Node a left right) 
 
-recursiveRemove value (Node x left right) | left == NIL && right == NIL = NIL
-                                          | right == NIL = (Node (getValue left) (getLeft left) (getLeft right))
-                                          | left == NIL = (Node (getValue right) (getRight left) (getRight right))
-                                          | otherwise = (Node getValue left right) &&
-                                            where
-                                                smaller = minimum(right)
-                                                aux = getValue smaller
--}
+firstParentLeft (Node x left right) (Node a b c)  | (parent /= NIL) && (getRight parent == son) = firstParentLeft parent bst
+                                                  | otherwise = parent
+                                                  where
+                                                      parent = getParent x bst
+                                                      son = (Node x left right)
+                                                      bst = (Node a b c) 
+
+--remove um elemento da BST
+
+-- **Auxiliar para converter Maybe em Int
+toInt Nothing = 0
+toInt (Just x) = x
+
+-- **Verificar se o valor existe na árvore
+remove x (Node a b c) = if (search x (Node a b c)) /= NIL then treeRemove x ((Node a b c)) else (Node a b c)
+
+-- **Verificar se encontrou o nó a ser removido
+treeRemove x (Node a left right) | (l == Just x) = treeRemoveAux left parent
+                                 | (r == Just x) = treeRemoveAux right parent
+                                 | (x == a) = treeRemoveAux parent NIL
+                                 | (x < a) = (Node a (treeRemove x left) right)
+                                 | otherwise = (Node a left (treeRemove x right))
+                                 where
+                                   l = getValue left
+                                   r = getValue right
+                                   parent = (Node a left right)
+ 
+-- **Nó folha
+
+treeRemoveAux (Node x NIL NIL) (Node a left right) | (getValue left == Just x) = (Node a NIL right)
+                                                   | otherwise = (Node a left NIL)
+
+-- **Nó raiz com um filho
+treeRemoveAux (Node x left NIL) NIL = left
+treeRemoveAux (Node x NIL right) NIL = right
+
+-- **Nó não-raiz com um filho
+treeRemoveAux (Node x y NIL) (Node a left right) | left == (Node x y NIL) = (Node a y right)
+                                                 | otherwise = (Node a left y) 
+
+treeRemoveAux (Node x NIL z) (Node a left right) | left == (Node x NIL z) = (Node a z right)
+                                                 | otherwise = (Node a left z)
+
+-- **Nó com dois filhos                                                 
+treeRemoveAux (Node x y z) (Node a b c) | b == child = (Node newA (Node next (getLeft newB) (getRight newB)) newC)
+                                        | otherwise = (Node newA newB (Node next (getLeft newC) (getRight newC)))
+                                        where
+                                          child = (Node x y z)
+                                          parent = (Node a b c)
+                                          next = toInt (successor x parent) 
+                                          newParent = treeRemove next parent
+                                          newA = toInt (getValue newParent)
+                                          newB = getLeft newParent
+                                          newC = getRight newParent  
 
 --retorna uma lista com os dados da BST nos diversos tipos de caminhamento
 preOrder NIL = []
