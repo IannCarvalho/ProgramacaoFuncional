@@ -4,39 +4,32 @@
 - Procure usar casamento de padroes e reutilizar as funcoes.
 -}
 
-xor :: Bool -> Bool -> Bool
 xor True False = True
 xor False True = True
 xor _ _ = False
 
-impl :: Bool -> Bool -> Bool
 impl a b = (not a) || b
 
-equiv :: Bool -> Bool -> Bool
 equiv a b = (impl a b) && (impl b a)
 
 {-
 A funcao square esta implementada e eleva ao quadrado um determinado numero
 -}
 
-square :: Integer -> Integer
 square x = x*x
 
 {-
 - Implemente a funcao potencia, que retorna o resultado de x elevado a y 
 -}
 
-pow :: Integer -> Integer -> Integer
 pow x 0 = 1
-pow x y
-  | y > 0 = x * (pow x (y-1))
-  | otherwise = 1/(pow x (-y))
+pow x y | y > 0 = x * (pow x (y-1))
+        | otherwise = 1/(pow x (-y))
 
 {-
 - Implemente a funcao fatorial que calcula o fatorial de um numero 
 -}
 
-fatorial :: Integer -> Integer
 fatorial 0 = 1
 fatorial x = x * fatorial (x-1)
 
@@ -46,19 +39,16 @@ fatorial x = x * fatorial (x-1)
 -}
 
 -- Minha Solução
-isPrime :: Integer -> Bool
 isPrime x = ([] == dividers)
   where
     dividers = [y | y <- [2..(x-1)], (x `mod` y == 0)]
 
 -- Solução do Professor
-isPrime :: Integer -> Bool
 isPrime 1 = True
 isPrime 2 = True
 isPrime 3 = True
 isPrime x = isPrime' x [2..(x-1)]
 
-isPrime' :: Integer -> [Integer] -> Bool
 isPrime' x [] = True
 isPrime' x (y:ys) = if (mod x y) == 0 then False 
                     else isPrime' x ys
@@ -68,18 +58,15 @@ isPrime' x (y:ys) = if (mod x y) == 0 then False
 -}
 
 -- Minha Solução
-fib :: Integer -> Integer
 fib 0 = 0
 fib 1 = 1
 fib x = fib(x-1) + fib(x-2)
 
 -- Solução do Professor
-fib :: Integer -> Integer
 fib 1 = [1]	
 fib 2 = [1,1]
 fib x = last (fib' x)
 
-fib' :: Integer -> [Integer]
 fib' 1 = [1]
 fib' 2 = [1,1]
 fib' n = previous ++ [(last (init previous)) + (last previous)]
@@ -92,14 +79,12 @@ fib' n = previous ++ [(last (init previous)) + (last previous)]
 -}
 
 -- Minha Solução
-mdc :: Integer -> Integer -> Integer
 mdc x 0 = x
 mdc 0 y = y
 mdc x y | x < y = mdc x (y-x)
         | otherwise = mdc (x-y) y
 
 -- Solução do Professor
-mdc :: Integer -> Integer -> Integer
 mdc 0 y = y
 mdc x 0 = x
 mdc x y = mdc y r
@@ -111,22 +96,17 @@ mdc x y = mdc y r
 -}
 
 -- Minha Solução
-mmc :: Integer -> Integer -> Integer
 mmc x y = mmc' x y (max x y)
-  
-mmc' :: Integer -> Integer -> Integer -> Integer
-mmc' x y n | divisivel x y n = n
-		   | otherwise = mmc' x y (n+1)
+
+mmc' x y n  | divisivel x y n = n
+            | otherwise = mmc' x y (n+1)
 		   
-divisivel :: Integer -> Integer -> Integer -> Bool
 divisivel x y n = (mod n x == 0) && (mod n y == 0)
 
 -- Solução do Professor
-mmc :: Integer -> Integer -> Integer
 mmc x y = head ys
   where ys = filter (divisivel x y) [(min x y)..x*y]
 
-divisivel :: Integer -> Integer -> Integer -> Bool
 divisivel x y n = (mod n x == 0) && (mod n y == 0)
 
 {-
@@ -135,16 +115,13 @@ divisivel x y n = (mod n x == 0) && (mod n y == 0)
 -}
 
 -- Minha Solução
-coprimo x y :: Integer -> Integer -> Bool
 coprimo x y | (mdc x y) == 1 = True
-			| otherwise = False
+      			| otherwise = False
 
 -- Solução do Professor
-coprimo x y :: Integer -> Integer -> Bool
 coprimo x y = if (mdc x y) == 1 then True else False
 
 {-
 - Calcula a conjectura de Goldbach, que diz que um numero par maior que 2 pode ser escrito como a soma de dois numeros primos. Ex: 28 = 5 + 23.
 -}
-goldbach :: Integer -> Bool
 goldbach x = [ (y,z) | y <- filter isPrime [1..(x-1)], z <- filter isPrime [1..(x-1)], y + z == x ]
